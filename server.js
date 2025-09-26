@@ -1,3 +1,30 @@
+import os from "os";
+
+function getIPs() {
+  const nets = os.networkInterfaces();
+  const results = {
+    localhost: "127.0.0.1",
+    lan: []
+  };
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      // Only consider IPv4, non-internal addresses
+      if (net.family === "IPv4" && !net.internal) {
+        results.lan.push(net.address);
+      }
+    }
+  }
+
+  return results;
+}
+
+const ips = getIPs();
+console.log("Localhost: http://127.0.0.1:3000");
+ips.lan.forEach(ip => {
+  console.log(`LAN: http://${ip}:3000`);
+});
+
 const http = require("http");
 const WebSocket = require("ws");
 
